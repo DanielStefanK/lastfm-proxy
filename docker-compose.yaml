@@ -1,0 +1,9 @@
+version: '3'
+services:
+  fitx-proxy:
+    build: .
+    environment:
+      - API_KEY=test
+    restart: always
+    ports:
+      - 8080:8080
