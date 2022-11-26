@@ -8,6 +8,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/gin-contrib/cors"
 	ginzap "github.com/gin-contrib/zap"
 	"gitlab.com/DanielStefanK/now-playing-relay/responses"
 	"go.uber.org/zap"
@@ -19,6 +20,15 @@ func main() {
 	router := gin.New()
 	logger, _ := zap.NewProduction()
 	router.Use(ginzap.Ginzap(logger, time.RFC3339, true))
+
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{os.Getenv("CORS_ORIGIN")},
+		AllowMethods:     []string{"GET"},
+		AllowHeaders:     []string{"Origin"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	router.GET("/api/recent/:username", func(c *gin.Context) {
 		username, _ := c.Params.Get("username")
